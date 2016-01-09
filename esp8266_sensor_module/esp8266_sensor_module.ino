@@ -20,7 +20,7 @@
 
 // DHT 11 sensor
 #define DHTPIN 5
-#define DHTTYPE DHT11 
+#define DHTTYPE DHT22 
 
 // WiFi parameters
 #define WLAN_SSID       "WLAN_SSID"
