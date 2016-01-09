@@ -31,6 +31,9 @@ const int lamp_pin = 5;
 #define AIO_USERNAME    "AIO_USERNAME"
 #define AIO_KEY         "AIO_KEY"
 
+// Functions
+void connect();
+
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
 WiFiClient client;
 
