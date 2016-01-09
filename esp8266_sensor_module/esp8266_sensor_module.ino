@@ -35,6 +35,9 @@
 // DHT sensor
 DHT dht(DHTPIN, DHTTYPE, 15);
 
+// Functions
+void connect();
+
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
 WiFiClient client;
 
