@@ -1,6 +1,6 @@
 /***************************************************
   Adafruit ESP8266 Sensor Module
-  
+
   Must use ESP8266 Arduino from:
     https://github.com/esp8266/Arduino
   Works great with Adafruit's Huzzah ESP board:
@@ -20,7 +20,7 @@
 
 // DHT 11 sensor
 #define DHTPIN 5
-#define DHTTYPE DHT22 
+#define DHTTYPE DHT22
 
 // WiFi parameters
 #define WLAN_SSID       "WLAN_SSID"
@@ -30,36 +30,23 @@
 #define AIO_SERVER      "io.adafruit.com"
 #define AIO_SERVERPORT  1883
 #define AIO_USERNAME    "AIO_USERNAME"
-#define AIO_KEY         "AIO_KEY"
+#define AIO_KEY         "AIO_KEY"  // Obtained from account info on io.adafruit.com
 
 // DHT sensor
 DHT dht(DHTPIN, DHTTYPE, 15);
 
 // Functions
-void connect();
+// void connect();
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
 WiFiClient client;
 
-// Store the MQTT server, client ID, username, and password in flash memory.
-const char MQTT_SERVER[] PROGMEM    = AIO_SERVER;
-
-// Set a unique MQTT client ID using the AIO key + the date and time the sketch
-// was compiled (so this should be unique across multiple devices for a user,
-// alternatively you can manually set this to a GUID or other random value).
-const char MQTT_CLIENTID[] PROGMEM  = AIO_KEY __DATE__ __TIME__;
-const char MQTT_USERNAME[] PROGMEM  = AIO_USERNAME;
-const char MQTT_PASSWORD[] PROGMEM  = AIO_KEY;
-
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
-Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, AIO_SERVERPORT, MQTT_CLIENTID, MQTT_USERNAME, MQTT_PASSWORD);/****************************** Feeds ***************************************/
+Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
 
 // Setup feeds for temperature & humidity
-const char TEMPERATURE_FEED[] PROGMEM = AIO_USERNAME "/feeds/temperature";
-Adafruit_MQTT_Publish temperature = Adafruit_MQTT_Publish(&mqtt, TEMPERATURE_FEED);
-
-const char HUMIDITY_FEED[] PROGMEM = AIO_USERNAME "/feeds/humidity";
-Adafruit_MQTT_Publish humidity = Adafruit_MQTT_Publish(&mqtt, HUMIDITY_FEED);
+Adafruit_MQTT_Publish temperature = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/temperature");
+Adafruit_MQTT_Publish humidity = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/humidity");
 
 /*************************** Sketch Code ************************************/
 
@@ -105,6 +92,10 @@ void loop() {
   // Grab the current state of the sensor
   int humidity_data = (int)dht.readHumidity();
   int temperature_data = (int)dht.readTemperature();
+
+  // By default, the temperature report is in Celsius, for Fahrenheit uncomment
+  //    following line.
+  // temperature_data = temperature_data*(9.0/5.0) + 32.0;
 
   // Publish data
   if (! temperature.publish(temperature_data))
@@ -152,3 +143,4 @@ void connect() {
   Serial.println(F("Adafruit IO Connected!"));
 
 }
+
